@@ -35,14 +35,14 @@ export const FilterInput = styled.select`
   border: none;
   outline: none;
   padding: 20px;
-  appearance: none;
   position: relative;
+  appearance: none;
 
-  &::before {
+  &::after {
     content: '⌄';
+    position: absolute;
     width: 12px;
     height: 6px;
-    display: absolute;
     color: #ffffff;
   }
 `
