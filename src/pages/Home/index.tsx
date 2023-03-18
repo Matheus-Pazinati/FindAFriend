@@ -3,19 +3,37 @@ import { Container, HomeContent } from './styles'
 import logoIcon from '@/assets/icons/logo-home.svg'
 import homeBanner from '@/assets/images/animals-banner.png'
 import search from '@/assets/icons/search.svg'
+import { useEffect, useState } from 'react'
+import { api } from '@/lib/axios'
+
+interface BrazilStateProps {
+  id: number
+  sigla: string
+}
 
 export function Home() {
-  function handleSearchPets() {
-    // TO DO
-  }
+  const [brazilStates, setBrazilStates] = useState<BrazilStateProps[]>([])
 
-  function handleChangeState() {
-    // TO DO
-  }
+  useEffect(() => {
+    async function getBrazilStatesAbbreviation() {
+      const response = await api.get('/location/states')
+      const states = (await response.data.states) as BrazilStateProps[]
+      setBrazilStates(states)
+    }
+    getBrazilStatesAbbreviation()
+  }, [])
 
-  function handleChangeCity() {
-    // TO DO
-  }
+  // function handleSearchPets() {
+  //   // TO DO
+  // }
+
+  // function handleChangeState() {
+  //   // TO DO
+  // }
+
+  // function handleChangeCity() {
+  //   // TO DO
+  // }
 
   return (
     <Container>
@@ -39,9 +57,13 @@ export function Home() {
             <span>Busque um amigo: </span>
             <div>
               <select name="State" id="State">
-                <option value="SP">SP</option>
-                <option value="RJ">RJ</option>
-                <option value="MG">MG</option>
+                {brazilStates.map((state) => {
+                  return (
+                    <option value={state.sigla} key={state.id}>
+                      {state.sigla}
+                    </option>
+                  )
+                })}
               </select>
               <select name="City" id="City">
                 <option value="São Paulo">São Paulo</option>

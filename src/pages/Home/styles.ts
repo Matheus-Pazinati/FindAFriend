@@ -60,6 +60,7 @@ export const HomeContent = styled.section`
         color: #ffffff;
         font-weight: 800;
         outline: none;
+        cursor: pointer;
       }
 
       button {
