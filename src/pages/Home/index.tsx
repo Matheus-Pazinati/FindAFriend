@@ -3,7 +3,7 @@ import { Container, HomeContent } from './styles'
 import logoIcon from '@/assets/icons/logo-home.svg'
 import homeBanner from '@/assets/images/animals-banner.png'
 import search from '@/assets/icons/search.svg'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { api } from '@/lib/axios'
 
 interface BrazilStateProps {
@@ -11,8 +11,15 @@ interface BrazilStateProps {
   sigla: string
 }
 
+interface BrazilCitiesProps {
+  code: string
+  name: string
+}
+
 export function Home() {
   const [brazilStates, setBrazilStates] = useState<BrazilStateProps[]>([])
+  const [chosenState, setChosenState] = useState('RO')
+  const [citiesOfAState, setCitiesOfAState] = useState<BrazilCitiesProps[]>([])
 
   useEffect(() => {
     async function getBrazilStatesAbbreviation() {
@@ -23,15 +30,23 @@ export function Home() {
     getBrazilStatesAbbreviation()
   }, [])
 
-  // function handleSearchPets() {
-  //   // TO DO
-  // }
+  function handleChangeState(event: ChangeEvent<HTMLSelectElement>) {
+    setChosenState(event.target.value)
+  }
 
-  // function handleChangeState() {
-  //   // TO DO
-  // }
+  useEffect(() => {
+    async function getCitiesFromState() {
+      const response = await api.get(`/location/citys/${chosenState}`)
+      setCitiesOfAState(response.data.citys)
+    }
+    getCitiesFromState()
+  }, [chosenState])
 
   // function handleChangeCity() {
+  //   // TO DO
+  // }
+
+  // function handleSearchPets() {
   //   // TO DO
   // }
 
@@ -56,7 +71,12 @@ export function Home() {
           <form action="">
             <span>Busque um amigo: </span>
             <div>
-              <select name="State" id="State">
+              <select
+                name="state"
+                id="state"
+                value={chosenState}
+                onChange={handleChangeState}
+              >
                 {brazilStates.map((state) => {
                   return (
                     <option value={state.sigla} key={state.id}>
@@ -65,9 +85,14 @@ export function Home() {
                   )
                 })}
               </select>
-              <select name="City" id="City">
-                <option value="São Paulo">São Paulo</option>
-                <option value="Santa Adélia">Santa Adélia</option>
+              <select name="city" id="city">
+                {citiesOfAState.map((city) => {
+                  return (
+                    <option value={city.name} key={city.code}>
+                      {city.name}
+                    </option>
+                  )
+                })}
               </select>
             </div>
 
