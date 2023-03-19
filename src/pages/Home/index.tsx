@@ -18,8 +18,21 @@ interface BrazilCitiesProps {
 
 export function Home() {
   const [brazilStates, setBrazilStates] = useState<BrazilStateProps[]>([])
-  const [chosenState, setChosenState] = useState('RO')
+  const [selectedState, setSelectedState] = useState('RO')
   const [citiesOfAState, setCitiesOfAState] = useState<BrazilCitiesProps[]>([])
+  const [selectedCity, setSelectedCity] = useState('Alta Floresta D Oeste')
+
+  function handleChangeState(event: ChangeEvent<HTMLSelectElement>) {
+    setSelectedState(event.target.value)
+  }
+
+  function handleChangeCity(event: ChangeEvent<HTMLSelectElement>) {
+    setSelectedCity(event.target.value)
+  }
+
+  // function handleSearchPets() {
+  //   // TO DO
+  // }
 
   useEffect(() => {
     async function getBrazilStatesAbbreviation() {
@@ -30,25 +43,13 @@ export function Home() {
     getBrazilStatesAbbreviation()
   }, [])
 
-  function handleChangeState(event: ChangeEvent<HTMLSelectElement>) {
-    setChosenState(event.target.value)
-  }
-
   useEffect(() => {
     async function getCitiesFromState() {
-      const response = await api.get(`/location/citys/${chosenState}`)
+      const response = await api.get(`/location/citys/${selectedState}`)
       setCitiesOfAState(response.data.citys)
     }
     getCitiesFromState()
-  }, [chosenState])
-
-  // function handleChangeCity() {
-  //   // TO DO
-  // }
-
-  // function handleSearchPets() {
-  //   // TO DO
-  // }
+  }, [selectedState])
 
   return (
     <Container>
@@ -74,7 +75,7 @@ export function Home() {
               <select
                 name="state"
                 id="state"
-                value={chosenState}
+                value={selectedState}
                 onChange={handleChangeState}
               >
                 {brazilStates.map((state) => {
@@ -85,7 +86,12 @@ export function Home() {
                   )
                 })}
               </select>
-              <select name="city" id="city">
+              <select
+                name="city"
+                id="city"
+                value={selectedCity}
+                onChange={handleChangeCity}
+              >
                 {citiesOfAState.map((city) => {
                   return (
                     <option value={city.name} key={city.code}>
