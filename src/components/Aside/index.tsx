@@ -77,14 +77,21 @@ const independencyOptions = [
   },
 ]
 
-export function Aside() {
-  function handleSearchPets() {
-    // TO DO
+interface AsideProps {
+  initialQuery?: {
+    city: string
+    state: string
   }
+}
 
-  function handleChangeSearchFilters() {
-    // TO DO
-  }
+export function Aside({ initialQuery }: AsideProps) {
+  // function handleSearchPets() {
+  //   // TO DO
+  // }
+
+  // function handleChangeSearchFilters() {
+  //   // TO DO
+  // }
 
   return (
     <Container>

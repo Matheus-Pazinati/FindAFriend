@@ -20,7 +20,8 @@ export function Map() {
   //   // TO DO
   // }
   const [searchParams] = useSearchParams()
-  console.log(Object.fromEntries([...searchParams]))
+  const initialPlaceQuery = Object.fromEntries([...searchParams])
+  console.log(initialPlaceQuery)
 
   return (
     <Container>

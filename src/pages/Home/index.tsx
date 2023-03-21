@@ -1,5 +1,6 @@
 import { Container, HomeContent } from './styles'
 import queryString from 'query-string'
+import { useQuery } from 'react-query'
 
 import logoIcon from '@/assets/icons/logo-home.svg'
 import homeBanner from '@/assets/images/animals-banner.png'
@@ -7,6 +8,7 @@ import search from '@/assets/icons/search.svg'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { api } from '@/lib/axios'
 import { useNavigate } from 'react-router-dom'
+import { PlaceSelect } from '@/components/PlaceSelect'
 
 interface BrazilStateProps {
   id: number
@@ -19,10 +21,19 @@ interface BrazilCitiesProps {
 }
 
 export function Home() {
-  const [brazilStates, setBrazilStates] = useState<BrazilStateProps[]>([])
   const [selectedState, setSelectedState] = useState('RO')
   const [citiesOfAState, setCitiesOfAState] = useState<BrazilCitiesProps[]>([])
   const [selectedCity, setSelectedCity] = useState('Alta Floresta D Oeste')
+
+  const { data, error, isLoading } = useQuery('states', async () => {
+    try {
+      const response = await api.get('/location/states')
+      const responseData = response.data.states as BrazilStateProps[]
+      return responseData
+    } catch (_) {
+      console.log(error)
+    }
+  })
 
   const navigate = useNavigate()
 
@@ -45,15 +56,6 @@ export function Home() {
     event.preventDefault()
     navigate(`/map?${cityAndStateQueryTransformed}`)
   }
-
-  useEffect(() => {
-    async function getBrazilStatesAbbreviation() {
-      const response = await api.get('/location/states')
-      const states = (await response.data.states) as BrazilStateProps[]
-      setBrazilStates(states)
-    }
-    getBrazilStatesAbbreviation()
-  }, [])
 
   useEffect(() => {
     async function getCitiesFromState() {
@@ -85,37 +87,21 @@ export function Home() {
           <form onSubmit={handleSearchPets}>
             <span>Busque um amigo: </span>
             <div>
-              <select
+              <PlaceSelect
                 name="state"
-                id="state"
-                value={selectedState}
-                onChange={handleChangeState}
-              >
-                {brazilStates.map((state) => {
-                  return (
-                    <option value={state.sigla} key={state.id}>
-                      {state.sigla}
-                    </option>
-                  )
-                })}
-              </select>
-              <select
+                type="state"
+                options={data}
+                onSelectChange={handleChangeState}
+              />
+              <PlaceSelect
                 name="city"
-                id="city"
-                value={selectedCity}
-                onChange={handleChangeCity}
-              >
-                {citiesOfAState.map((city) => {
-                  return (
-                    <option value={city.name} key={city.code}>
-                      {city.name}
-                    </option>
-                  )
-                })}
-              </select>
+                type="city"
+                options={citiesOfAState}
+                onSelectChange={handleChangeCity}
+              />
             </div>
 
-            <button type="submit">
+            <button type="submit" disabled={isLoading}>
               <img src={search} alt="" />
             </button>
           </form>
