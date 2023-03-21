@@ -1,10 +1,12 @@
 import { Container, HomeContent } from './styles'
+import queryString from 'query-string'
 
 import logoIcon from '@/assets/icons/logo-home.svg'
 import homeBanner from '@/assets/images/animals-banner.png'
 import search from '@/assets/icons/search.svg'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { api } from '@/lib/axios'
+import { useNavigate } from 'react-router-dom'
 
 interface BrazilStateProps {
   id: number
@@ -22,6 +24,15 @@ export function Home() {
   const [citiesOfAState, setCitiesOfAState] = useState<BrazilCitiesProps[]>([])
   const [selectedCity, setSelectedCity] = useState('Alta Floresta D Oeste')
 
+  const navigate = useNavigate()
+
+  const cityAndStateQuery = {
+    city: selectedCity,
+    state: selectedState,
+  }
+
+  const cityAndStateQueryTransformed = queryString.stringify(cityAndStateQuery)
+
   function handleChangeState(event: ChangeEvent<HTMLSelectElement>) {
     setSelectedState(event.target.value)
   }
@@ -30,9 +41,10 @@ export function Home() {
     setSelectedCity(event.target.value)
   }
 
-  // function handleSearchPets() {
-  //   // TO DO
-  // }
+  function handleSearchPets(event: FormEvent) {
+    event.preventDefault()
+    navigate(`/map?${cityAndStateQueryTransformed}`)
+  }
 
   useEffect(() => {
     async function getBrazilStatesAbbreviation() {
@@ -47,6 +59,7 @@ export function Home() {
     async function getCitiesFromState() {
       const response = await api.get(`/location/citys/${selectedState}`)
       setCitiesOfAState(response.data.citys)
+      setSelectedCity(response.data.citys[0].name)
     }
     getCitiesFromState()
   }, [selectedState])
@@ -69,7 +82,7 @@ export function Home() {
         </main>
         <footer>
           <p>Encontre o animal de estimação ideal para seu estilo de vida!</p>
-          <form action="">
+          <form onSubmit={handleSearchPets}>
             <span>Busque um amigo: </span>
             <div>
               <select

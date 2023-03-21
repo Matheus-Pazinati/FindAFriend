@@ -1,6 +1,8 @@
 import { Aside } from '~/Aside'
 import { Card } from '~/Card'
 
+import { useSearchParams } from 'react-router-dom'
+
 import chevron from '@/assets/icons/chevron-bottom-blue.svg'
 import dog from '@/assets/images/dog.png'
 
@@ -14,9 +16,11 @@ import {
 } from './styles'
 
 export function Map() {
-  function handleFilterByPetType() {
-    // TO DO
-  }
+  // function handleFilterByPetType() {
+  //   // TO DO
+  // }
+  const [searchParams] = useSearchParams()
+  console.log(Object.fromEntries([...searchParams]))
 
   return (
     <Container>
