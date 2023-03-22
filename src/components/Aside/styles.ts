@@ -15,7 +15,7 @@ export const AsideHeader = styled.div`
   }
 
   & > div {
-    padding: 81px 56px 26px;
+    padding: 81px 12px 26px;
     display: flex;
     flex-direction: column;
     gap: 26px;
@@ -49,6 +49,7 @@ export const HeaderInput = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    flex: 3;
 
     background-color: #f4d35e;
     border: none;

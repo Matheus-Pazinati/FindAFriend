@@ -4,23 +4,31 @@ import { Select } from './styles'
 type SelectProps = ComponentProps<typeof Select> & {
   name: string
   type: 'city' | 'state'
+  selectValue: string
   options?: {
     sigla?: string
     id?: number
     code?: string
     name?: string
   }[]
-  onSelectChange: (event: ChangeEvent<HTMLSelectElement>) => void
+  onSelectChange?: (event: ChangeEvent<HTMLSelectElement>) => void
 }
 
 export function PlaceSelect({
   name,
+  selectValue,
   options,
   onSelectChange,
   type,
 }: SelectProps) {
   return (
-    <Select name={name} id={name} onChange={onSelectChange}>
+    <Select
+      name={name}
+      id={name}
+      value={selectValue}
+      onChange={onSelectChange}
+      type={type}
+    >
       {type === 'city'
         ? options?.map((option) => {
             return (

@@ -11,6 +11,11 @@ import {
   ContentHeader,
   ContentFilters,
 } from './styles'
+import { PlaceSelect } from '../PlaceSelect'
+import { useQueryClient } from 'react-query'
+import { BrazilCitiesProps, BrazilStateProps } from '@/pages/Home'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { api } from '@/lib/axios'
 
 const ageOptions = [
   {
@@ -85,6 +90,9 @@ interface AsideProps {
 }
 
 export function Aside({ initialQuery }: AsideProps) {
+  const [citiesOfAState, setCitiesOfAState] = useState<BrazilCitiesProps[]>([])
+  const [selectedState, setSelectedState] = useState(initialQuery?.state)
+  const [selectedCity, setSelectedCity] = useState(initialQuery?.city)
   // function handleSearchPets() {
   //   // TO DO
   // }
@@ -93,13 +101,45 @@ export function Aside({ initialQuery }: AsideProps) {
   //   // TO DO
   // }
 
+  function handleChangeState(event: ChangeEvent<HTMLSelectElement>) {
+    setSelectedState(event.target.value)
+  }
+
+  function handleChangeCity(event: ChangeEvent<HTMLSelectElement>) {
+    setSelectedCity(event.target.value)
+  }
+
+  const query = useQueryClient()
+  const states = query.getQueryData('states') as BrazilStateProps[]
+
+  useEffect(() => {
+    async function getCitiesFromState() {
+      const response = await api.get(`/location/citys/${selectedState}`)
+      setCitiesOfAState(response.data.citys)
+    }
+    getCitiesFromState()
+  }, [selectedState])
+
   return (
     <Container>
       <AsideHeader>
         <div>
           <img src={logo} alt="" />
           <HeaderInput>
-            <input type="text" placeholder="Insira uma cidade" />
+            <PlaceSelect
+              name="state"
+              type="state"
+              options={states}
+              onSelectChange={handleChangeState}
+              selectValue={selectedState!}
+            />
+            <PlaceSelect
+              name="city"
+              type="city"
+              options={citiesOfAState}
+              onSelectChange={handleChangeCity}
+              selectValue={selectedCity!}
+            />
             <button>
               <img src={search} alt="ícone de lupa" />
             </button>

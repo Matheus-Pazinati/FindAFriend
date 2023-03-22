@@ -10,27 +10,27 @@ import { api } from '@/lib/axios'
 import { useNavigate } from 'react-router-dom'
 import { PlaceSelect } from '@/components/PlaceSelect'
 
-interface BrazilStateProps {
+export interface BrazilStateProps {
   id: number
   sigla: string
 }
 
-interface BrazilCitiesProps {
+export interface BrazilCitiesProps {
   code: string
   name: string
 }
 
 export function Home() {
-  const [selectedState, setSelectedState] = useState('RO')
   const [citiesOfAState, setCitiesOfAState] = useState<BrazilCitiesProps[]>([])
+  const [selectedState, setSelectedState] = useState('RO')
   const [selectedCity, setSelectedCity] = useState('Alta Floresta D Oeste')
 
-  const { data, error, isLoading } = useQuery('states', async () => {
+  const { data: states, isLoading } = useQuery('states', async () => {
     try {
       const response = await api.get('/location/states')
       const responseData = response.data.states as BrazilStateProps[]
       return responseData
-    } catch (_) {
+    } catch (error) {
       console.log(error)
     }
   })
@@ -90,14 +90,16 @@ export function Home() {
               <PlaceSelect
                 name="state"
                 type="state"
-                options={data}
+                options={states}
                 onSelectChange={handleChangeState}
+                selectValue={selectedState}
               />
               <PlaceSelect
                 name="city"
                 type="city"
                 options={citiesOfAState}
                 onSelectChange={handleChangeCity}
+                selectValue={selectedCity}
               />
             </div>
 

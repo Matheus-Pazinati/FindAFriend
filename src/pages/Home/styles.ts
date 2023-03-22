@@ -7,6 +7,7 @@ export const Container = styled.div`
 
 export const HomeContent = styled.section`
   max-width: 1316px;
+  height: 100vh;
   box-sizing: content-box;
   padding: 7rem 0;
   margin: 0 auto;
@@ -48,19 +49,6 @@ export const HomeContent = styled.section`
         display: flex;
         align-items: center;
         gap: 10px;
-      }
-
-      select {
-        border-radius: 15px;
-        border: 1px solid #f15156;
-        padding: 1rem;
-        background: #e44449;
-        border: none;
-        position: relative;
-        color: #ffffff;
-        font-weight: 800;
-        outline: none;
-        cursor: pointer;
       }
 
       button {

@@ -1,6 +1,8 @@
 import { Aside } from '~/Aside'
 import { Card } from '~/Card'
 
+import queryString from 'query-string'
+
 import { useSearchParams } from 'react-router-dom'
 
 import chevron from '@/assets/icons/chevron-bottom-blue.svg'
@@ -15,17 +17,23 @@ import {
   Display,
 } from './styles'
 
+interface PlaceQueryProps {
+  state: string
+  city: string
+}
+
 export function Map() {
   // function handleFilterByPetType() {
   //   // TO DO
   // }
   const [searchParams] = useSearchParams()
-  const initialPlaceQuery = Object.fromEntries([...searchParams])
-  console.log(initialPlaceQuery)
+  const initialPlaceQuery = queryString.parse(
+    String(searchParams),
+  ) as unknown as PlaceQueryProps
 
   return (
     <Container>
-      <Aside />
+      <Aside initialQuery={initialPlaceQuery} />
 
       <Content>
         <Header>
